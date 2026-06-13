@@ -1,112 +1,177 @@
 # Shadow Rooms
 
-Shadow Rooms is a real-user based social app that balances **controlled identity**, **private/public spaces**, and **free-form collaboration** — without turning conversations into public content.
+> A room-based social collaboration prototype built around controlled identity, private spaces, and expressive group interaction.
 
-It’s built for people who want to talk, create rooms, invite selectively, and collaborate in real time — without everything leaking outside the app.
+Shadow Rooms explores a simple idea: online conversations should feel alive without forcing every interaction into a public profile, follower system, or permanent social feed.
 
----
-
-## 🕶️ What is Shadow Rooms?
-
-Shadow Rooms allows users to:
-- Connect with **real users using visible names**
-- Create **private or public rooms (servers)**
-- Control access using **ownership, invites, and secret keys**
-- Collaborate live using a **shared whiteboard**
-
-This is not a fully anonymous chaos app.  
-This is **structured privacy with freedom**.
+Users can create public or private hangouts, connect with friends, chat inside rooms, open direct messages, launch polls, and collaborate on a shared whiteboard. The current repository is an interactive frontend prototype focused on product design, UI systems, and social interaction mechanics.
 
 ---
 
-## 🧠 Identity & Privacy Model (Important)
+## Core Idea
 
-- Friend requests require a **username**
-- Once connected, both users can see each other’s names
-- No public profiles or follower system
-- Conversations stay **inside the app only**
+Shadow Rooms is designed around **structured privacy**:
 
-Identity exists **only where necessary** — not for validation.
+- Identity exists where it is useful
+- Conversations stay inside the product
+- Private rooms are controlled through invite keys
+- Public rooms remain discoverable for open participation
+- Collaboration tools are part of the conversation, not separate utilities
 
----
-
-## 🏠 Rooms & Servers
-
-### 🔒 Private Rooms
-- Created and owned by a single user
-- Require a **secret key** to join
-- Only the owner knows the secret key
-- Owner identity is visible inside the room
-
-### 🌍 Public Servers
-- Anyone can discover and join
-- Still bound by in-app rules and moderation
-- Useful for open discussions and group activity
+This is not an anonymous chaos app and it is not a public-content platform.
 
 ---
 
-## 🔗 Smart Invite System (Core Feature)
+## Current Prototype Features
 
-A unique feature of Shadow Rooms:
+### Identity and Access
 
-- If User A is in a private room  
-- And User B is User A’s friend  
-- User A can **invite User B directly**
-- User B can join **without needing the secret key**
+- Sign-up and login interface
+- Visible display names and usernames
+- Friend discovery by username
+- Friend-request workflow
+- Lightweight presence tracking
 
-This allows:
-- Controlled growth of private rooms  
-- No key sharing chaos  
-- Trust-based access instead of links  
+### Public and Private Rooms
+
+- Create public hangouts that anyone can discover
+- Create private hangouts with generated invite keys
+- Copy and share private-room access keys
+- Track room presence and activity states
+
+### Event Modes
+
+Each room can be launched with a different interaction style:
+
+| Mode | Purpose |
+| --- | --- |
+| Default | Balanced group conversation |
+| Chill | Relaxed hangout with slower energy growth |
+| Debate | Faster-paced discussion with higher activity gain |
+| Confession | Anonymous-style message display inside the room |
+| Chaos | Maximum-energy interaction mode |
+
+### Social Physics
+
+Rooms have a dynamic energy system:
+
+- Messages increase room energy
+- Different event modes change energy growth and decay
+- Interactive actions can boost the room atmosphere
+- The interface reacts visually as the room becomes more active
+
+### Messaging and Interaction
+
+- Room-based chat interface
+- Typing-state UI
+- Direct-message windows for friends
+- Poll creation and voting
+- Confetti interaction for lightweight social feedback
+
+### Shared Whiteboard
+
+- Canvas-based drawing interface
+- Adjustable path rendering with neon-style effects
+- Shared cursor state
+- Clear-board action
+- Near-real-time polling simulation for collaborative updates
+
+### Admin View
+
+- Activity logging
+- User-presence visibility
+- Room and interaction overview
 
 ---
 
-## 🎨 Live Shared Whiteboard
+## Architecture
 
-Every room can include a **real-time collaborative whiteboard**.
+The current version is a frontend prototype.
 
-Features:
-- Visible to everyone in the room
-- Users can draw or type freely
-- Changes sync live for all members
-- Fully private — no external sharing
+```text
+React UI
+   ↓
+TypeScript application logic
+   ↓
+In-memory mock data layer
+   ↓
+Local browser state + polling-based simulation
+```
 
-This enables:
-- Brainstorming
-- Visual discussions
-- Casual creative interaction
-
----
-
-## ⚠️ Boundaries & Limits
-
-Shadow Rooms allows open expression — **within limits**.
-
-- Real users only (no bots)
-- Owner-based room control
-- Abuse and spam prevention
-- App-contained data (no public exposure)
-
-Freedom without structure is useless.  
-This app enforces both.
+The prototype intentionally focuses on product behavior and interface design before introducing a production backend.
 
 ---
 
-## 🛠️ Tech Stack
+## Tech Stack
 
-> Add only what is actually used.
-
-- Frontend: *(React / Vite / etc.)*
-- Backend: *(Node / Firebase / etc.)*
-- Realtime: *(WebSockets / Firebase / etc.)*
-- Auth: *(real-user auth method)*
+| Area | Technology |
+| --- | --- |
+| Frontend | React 19 |
+| Language | TypeScript |
+| Build Tool | Vite |
+| Whiteboard | HTML Canvas API |
+| Client State | React state, local browser storage, in-memory data layer |
+| Collaboration Prototype | Polling-based near-real-time simulation |
 
 ---
 
-## 🚀 Local Setup
+## Prototype Status
+
+Shadow Rooms is currently a **functional frontend prototype**, not a production-ready social platform.
+
+The current authentication flow, room data, messages, presence states, and whiteboard data are handled through an in-memory mock data layer. Data is not persisted across server restarts or shared through a real backend yet.
+
+That limitation is intentional at this stage: the repository demonstrates product direction, interaction design, and frontend architecture without pretending that the backend layer is complete.
+
+---
+
+## Planned Production Upgrades
+
+- Persistent database for users, rooms, messages, and whiteboard state
+- Secure authentication with session management
+- WebSocket-based real-time synchronization
+- Server-side validation for private-room keys
+- Rate limiting and abuse prevention
+- Persistent message history
+- Production-ready deployment architecture
+- Automated tests for critical interaction flows
+
+---
+
+## Run Locally
 
 ```bash
 git clone https://github.com/sohailcodes-ai/Shadow-Rooms.git
 cd Shadow-Rooms
 npm install
 npm run dev
+```
+
+Create a production build:
+
+```bash
+npm run build
+```
+
+Preview the production build locally:
+
+```bash
+npm run preview
+```
+
+---
+
+## Design Direction
+
+Shadow Rooms is built around a dark, neon-style interface with glassmorphism-inspired components. The visual system is intended to make rooms feel active and social without turning the UI into a noisy feed.
+
+The long-term goal is a private-first communication product where chat, rooms, presence, polls, and collaborative tools work together as one coherent experience.
+
+---
+
+## Author
+
+Built by **Sohail Ali**.
+
+- GitHub: https://github.com/sohailcodes-ai
+- Portfolio: https://samx-portfolio.vercel.app
