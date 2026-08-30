@@ -1,177 +1,212 @@
-# Shadow Rooms
-
-> A room-based social collaboration prototype built around controlled identity, private spaces, and expressive group interaction.
-
-Shadow Rooms explores a simple idea: online conversations should feel alive without forcing every interaction into a public profile, follower system, or permanent social feed.
-
-Users can create public or private hangouts, connect with friends, chat inside rooms, open direct messages, launch polls, and collaborate on a shared whiteboard. The current repository is an interactive frontend prototype focused on product design, UI systems, and social interaction mechanics.
-
----
-
-## Core Idea
-
-Shadow Rooms is designed around **structured privacy**:
-
-- Identity exists where it is useful
-- Conversations stay inside the product
-- Private rooms are controlled through invite keys
-- Public rooms remain discoverable for open participation
-- Collaboration tools are part of the conversation, not separate utilities
-
-This is not an anonymous chaos app and it is not a public-content platform.
-
----
-
-## Current Prototype Features
-
-### Identity and Access
-
-- Sign-up and login interface
-- Visible display names and usernames
-- Friend discovery by username
-- Friend-request workflow
-- Lightweight presence tracking
-
-### Public and Private Rooms
-
-- Create public hangouts that anyone can discover
-- Create private hangouts with generated invite keys
-- Copy and share private-room access keys
-- Track room presence and activity states
-
-### Event Modes
-
-Each room can be launched with a different interaction style:
-
-| Mode | Purpose |
-| --- | --- |
-| Default | Balanced group conversation |
-| Chill | Relaxed hangout with slower energy growth |
-| Debate | Faster-paced discussion with higher activity gain |
-| Confession | Anonymous-style message display inside the room |
-| Chaos | Maximum-energy interaction mode |
-
-### Social Physics
-
-Rooms have a dynamic energy system:
-
-- Messages increase room energy
-- Different event modes change energy growth and decay
-- Interactive actions can boost the room atmosphere
-- The interface reacts visually as the room becomes more active
-
-### Messaging and Interaction
-
-- Room-based chat interface
-- Typing-state UI
-- Direct-message windows for friends
-- Poll creation and voting
-- Confetti interaction for lightweight social feedback
-
-### Shared Whiteboard
-
-- Canvas-based drawing interface
-- Adjustable path rendering with neon-style effects
-- Shared cursor state
-- Clear-board action
-- Near-real-time polling simulation for collaborative updates
-
-### Admin View
-
-- Activity logging
-- User-presence visibility
-- Room and interaction overview
-
----
-
 ## Architecture
 
-The current version is a frontend prototype.
+Shadow Rooms is built as a real-time client/server application rather than a purely frontend prototype.
 
 ```text
-React UI
-   ↓
-TypeScript application logic
-   ↓
-In-memory mock data layer
-   ↓
-Local browser state + polling-based simulation
+                         ┌─────────────────────┐
+                         │      Web Client     │
+                         │   React + TypeScript│
+                         └──────────┬──────────┘
+                                    │
+                         HTTP / REST API
+                                    │
+                                    ▼
+                         ┌─────────────────────┐
+                         │     API Server      │
+                         │ Authentication      │
+                         │ Rooms / Users       │
+                         │ Messages / Polls    │
+                         │ Validation          │
+                         └──────────┬──────────┘
+                                    │
+                         WebSocket Connection
+                                    │
+                                    ▼
+                         ┌─────────────────────┐
+                         │  Real-Time Server   │
+                         │ Presence            │
+                         │ Room Events         │
+                         │ Chat                │
+                         │ Typing States       │
+                         │ Collaboration       │
+                         └──────────┬──────────┘
+                                    │
+                 ┌──────────────────┼──────────────────┐
+                 │                  │                  │
+                 ▼                  ▼                  ▼
+          ┌─────────────┐    ┌─────────────┐    ┌─────────────┐
+          │  Database   │    │    Redis    │    │   Storage   │
+          │ Persistence │    │ State/Cache │    │ Room Assets │
+          └─────────────┘    └─────────────┘    └─────────────┘
+                                    │
+                                    ▼
+                         ┌─────────────────────┐
+                         │   Docker Sandbox    │
+                         │ Isolated workloads  │
+                         │ / execution layer   │
+                         └─────────────────────┘
 ```
 
-The prototype intentionally focuses on product behavior and interface design before introducing a production backend.
+The frontend communicates with the backend through standard HTTP APIs for request/response operations and WebSockets for persistent real-time communication.
+
+This allows room state, presence, messages, typing indicators, collaborative interactions, and other events to propagate without relying on constant client polling.
 
 ---
 
-## Tech Stack
+## Technical Stack
 
-| Area | Technology |
-| --- | --- |
-| Frontend | React 19 |
-| Language | TypeScript |
-| Build Tool | Vite |
-| Whiteboard | HTML Canvas API |
-| Client State | React state, local browser storage, in-memory data layer |
-| Collaboration Prototype | Polling-based near-real-time simulation |
+### Frontend
+
+* React
+* TypeScript
+* Vite
+* HTML Canvas API
+* Client-side state management
+* WebSocket client
+
+### Backend
+
+* Node.js
+* TypeScript
+* HTTP / REST APIs
+* WebSocket-based real-time communication
+* Server-side validation
+* Session / identity management
+
+### Real-Time Systems
+
+WebSockets are used for persistent room connections and event delivery.
+
+The real-time layer handles concepts such as:
+
+* Room joining/leaving
+* Presence
+* Messages
+* Typing indicators
+* Room activity
+* Poll events
+* Collaborative interactions
+* Whiteboard events
+* Room state synchronization
+
+HTTP remains responsible for operations that don't require a persistent real-time connection.
 
 ---
 
-## Prototype Status
+## Data & Infrastructure
 
-Shadow Rooms is currently a **functional frontend prototype**, not a production-ready social platform.
+The backend is designed around persistent server-side state rather than purely local browser storage.
 
-The current authentication flow, room data, messages, presence states, and whiteboard data are handled through an in-memory mock data layer. Data is not persisted across server restarts or shared through a real backend yet.
+Depending on the subsystem, the application uses:
 
-That limitation is intentional at this stage: the repository demonstrates product direction, interaction design, and frontend architecture without pretending that the backend layer is complete.
+* Database-backed persistence
+* Redis for transient state and fast-access data
+* WebSocket connections for live state propagation
+* HTTP APIs for standard application operations
 
----
-
-## Planned Production Upgrades
-
-- Persistent database for users, rooms, messages, and whiteboard state
-- Secure authentication with session management
-- WebSocket-based real-time synchronization
-- Server-side validation for private-room keys
-- Rate limiting and abuse prevention
-- Persistent message history
-- Production-ready deployment architecture
-- Automated tests for critical interaction flows
+This separation keeps persistent data, ephemeral state, and real-time events from being unnecessarily coupled.
 
 ---
 
-## Run Locally
+## Docker & Sandboxing
 
-```bash
-git clone https://github.com/sohailcodes-ai/Shadow-Rooms.git
-cd Shadow-Rooms
-npm install
-npm run dev
+Shadow Rooms also includes containerized infrastructure for isolated workloads.
+
+Docker is used to provide controlled execution environments and keep potentially unsafe or resource-intensive operations isolated from the primary application process.
+
+The sandbox architecture is intentionally separated from the main API and real-time services.
+
+```text
+Application
+     │
+     ▼
+Sandbox Request
+     │
+     ▼
+Docker Container
+     │
+     ├── Isolated filesystem
+     ├── Resource limits
+     ├── Restricted execution
+     └── Disposable environment
 ```
 
-Create a production build:
-
-```bash
-npm run build
-```
-
-Preview the production build locally:
-
-```bash
-npm run preview
-```
+The sandbox layer is designed around the principle that untrusted execution should never happen directly inside the main application process.
 
 ---
 
-## Design Direction
+## Communication Model
 
-Shadow Rooms is built around a dark, neon-style interface with glassmorphism-inspired components. The visual system is intended to make rooms feel active and social without turning the UI into a noisy feed.
+Shadow Rooms uses two primary communication paths.
 
-The long-term goal is a private-first communication product where chat, rooms, presence, polls, and collaborative tools work together as one coherent experience.
+### HTTP
+
+Used for operations such as:
+
+* Authentication
+* Account/session operations
+* Room creation
+* Room discovery
+* Friend operations
+* Poll management
+* Historical data
+* Administrative operations
+
+### WebSockets
+
+Used for operations where latency matters:
+
+* Room presence
+* Chat messages
+* Typing states
+* Room activity
+* Live reactions
+* Poll updates
+* Whiteboard synchronization
+* Real-time room events
+
+This avoids treating every interaction as an HTTP request while still keeping conventional API operations simple and predictable.
 
 ---
 
-## Author
+## Current System
 
-Built by **Sohail Ali**.
+The project should be viewed as a **working full-stack prototype**, not a production-ready social network.
 
-- GitHub: https://github.com/sohailcodes-ai
-- Portfolio: https://samx-portfolio.vercel.app
+The product layer is substantially implemented, while production hardening remains a separate stage.
+
+The main remaining engineering concerns are:
+
+* Security hardening
+* Authentication/session security
+* Abuse prevention
+* Rate limiting
+* WebSocket connection management
+* Horizontal scaling
+* Persistent event handling
+* Sandbox hardening
+* Observability
+* Automated testing
+* Production deployment
+
+---
+
+## Technology Summary
+
+| Layer              | Technology                              |
+| ------------------ | --------------------------------------- |
+| Client             | React + TypeScript                      |
+| Build              | Vite                                    |
+| API                | HTTP / REST                             |
+| Real-Time          | WebSockets                              |
+| Backend            | Node.js + TypeScript                    |
+| Persistence        | Database                                |
+| Fast State / Cache | Redis                                   |
+| Graphics           | HTML Canvas                             |
+| Isolation          | Docker                                  |
+| Execution          | Sandboxed containers                    |
+| Communication      | HTTP + WebSockets                       |
+| Architecture       | Client / Server + Real-Time Event Layer |
+
+```
+```
